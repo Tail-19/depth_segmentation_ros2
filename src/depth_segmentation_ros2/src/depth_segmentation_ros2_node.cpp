@@ -1,21 +1,28 @@
 #include <cv_bridge/cv_bridge.h>
+
 #include <dynamic_reconfigure/server.h>
+
 #include <image_transport/image_transport.h>
 #include <image_transport/subscriber.h>
 #include <image_transport/subscriber_filter.h>
 #include <message_filters/subscriber.h>
 #include <message_filters/sync_policies/approximate_time.h>
 #include <message_filters/synchronizer.h>
+
 #include <pcl/PCLPointCloud2.h>
 #include <pcl/point_types.h>
 #include <pcl_conversions/pcl_conversions.h>
 #include <pcl_ros/point_cloud.h>
-#include <sensor_msgs/CameraInfo.h>
-#include <sensor_msgs/Image.h>
-#include <sensor_msgs/PointCloud2.h>
-#include <sensor_msgs/image_encodings.h>
+
+#include <sensor_msgs/msg/camera_info.h>
+#include <sensor_msgs/msg/image.h>
+#include <sensor_msgs/msg/point_cloud2.h>
+#include <sensor_msgs/image_encodings.hpp>
+
 #include <tf/transform_broadcaster.h>
+
 #include <Eigen/Core>
+
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -24,8 +31,8 @@
 #include <mask_rcnn_ros/Result.h>
 #endif
 
-#include "depth_segmentation/depth_segmentation.h"
-#include "depth_segmentation/ros_common.h"
+#include "depth_segmentation_ros2/ros_common.h"
+#include "depth_segmentation_ros2/depth_segmentation.h"
 
 struct PointSurfelLabel {
   PCL_ADD_POINT4D;

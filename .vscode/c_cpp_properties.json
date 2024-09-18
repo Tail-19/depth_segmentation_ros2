@@ -16,7 +16,8 @@
                 "/usr/local/games/**",
                 "/snap/bin/**",
                 "/usr/local/cuda/bin/**",
-                "/usr/local/cuda/bin/**"
+                "/usr/local/cuda/bin/**",
+                "/usr/include/pcl-1.12"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
