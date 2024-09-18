@@ -4,7 +4,7 @@
 // DEPTH_SEGMENTATION_ROS_COMMON_H_ is a macro that is used to avoid multiple inclusion of the same file
 #include <string>
 
-// #include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 
 namespace depth_segmentation {
 const static std::string kRgbImageTopic = "/camera/rgb/image_raw";
@@ -21,4 +21,4 @@ const static std::string kTfDepthCameraFrame = "camera0";
 
 }  // namespace depth_segmentation
 
-#endif  // DEPTH_SEGMENTATION_ROS_COMMON_H_
+#endif  // DEPTH_SEGMENTATION_ROS2_COMMON_H_
