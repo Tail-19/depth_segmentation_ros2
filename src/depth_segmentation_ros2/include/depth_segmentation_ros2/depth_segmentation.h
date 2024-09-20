@@ -5,8 +5,8 @@
 #include <opencv2/imgproc.hpp>
 #include <opencv2/rgbd.hpp>
 
-#include "depth_segmentation/DepthSegmenterConfig.h"
-#include "depth_segmentation/common.h"
+#include "depth_segmentation_ros2/DepthSegmenterConfig.h" 
+#include "depth_segmentation_ros2/common.h"
 
 namespace depth_segmentation {
 

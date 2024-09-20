@@ -1,4 +1,4 @@
-#include "depth_segmentation/depth_segmentation.h"
+#include "depth_segmentation_ros2/depth_segmentation.h"
 
 #include <algorithm>
 #include <limits>

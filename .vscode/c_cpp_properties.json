@@ -17,7 +17,8 @@
                 "/snap/bin/**",
                 "/usr/local/cuda/bin/**",
                 "/usr/local/cuda/bin/**",
-                "/usr/include/pcl-1.12"
+                "/usr/include/pcl-1.12",
+                "/usr/include/opencv4"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
