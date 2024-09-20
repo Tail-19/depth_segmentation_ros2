@@ -15,19 +15,24 @@
   <depend>cv_bridge</depend>
   
   <depend>dynamic_reconfigure</depend>
-  <depend>eigen_catkin</depend>
-  <depend>gflags_catkin</depend>
-  <depend>glog_catkin</depend>
+
   <depend>image_transport</depend>
-  <depend>pcl_catkin</depend>
+
+  <depend>tf2_ros</depend>
+  <depend>tf2</depend>
+  <depend>tf2_eigen</depend>
+
   <depend>pcl_conversions</depend>
   <depend>pcl_ros</depend>
-  <depend>roscpp</depend>
-  <depend>tf</depend>
+
+  <build_depend>gflags</build_depend>
+  <exec_depend>gflags</exec_depend>
 
   <build_depend>opencv</build_depend>
   <exec_depend>opencv</exec_depend>
 
+  <build_depend>eigen3</build_depend>
+  <exec_depend>eigen3</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
