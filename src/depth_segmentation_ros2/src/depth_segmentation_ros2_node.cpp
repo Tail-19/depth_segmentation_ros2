@@ -51,11 +51,12 @@ POINT_CLOUD_REGISTER_POINT_STRUCT(
         uint8_t, instance_label, instance_label)(uint8_t, semantic_label,
                                                  semantic_label))
 
-class DepthSegmentationNode {
+class DepthSegmentationNode : public rclcpp::Node {
  public:
   DepthSegmentationNode()
-      : node_handle_("~"), //
-        image_transport_(node_handle_),
+      : Node("depth_segmentation_node"), 
+        node(rclcpp::Node::make_shared(this->get_name())),
+        image_transport_(node),
         camera_info_ready_(false),
         depth_camera_(),
         rgb_camera_(),
@@ -64,28 +65,28 @@ class DepthSegmentationNode {
         depth_segmenter_(depth_camera_, params_) 
   {
     // Set up parameters.
-    node_handle_.param<bool>("semantic_instance_segmentation/enable",
+    this->declare_parameter("semantic_instance_segmentation/enable",
                              params_.semantic_instance_segmentation.enable,
                              params_.semantic_instance_segmentation.enable);
-    node_handle_.param<float>("semantic_instance_segmentation/overlap_threshold",
+    this->declare_parameter("semantic_instance_segmentation/overlap_threshold",
                              params_.semantic_instance_segmentation.overlap_threshold,
                              params_.semantic_instance_segmentation.overlap_threshold);
-    node_handle_.param<std::string>("depth_image_sub_topic", depth_image_topic_, depth_segmentation::kDepthImageTopic);
-    node_handle_.param<std::string>("rgb_image_sub_topic", rgb_image_topic_, depth_segmentation::kRgbImageTopic);
-    node_handle_.param<std::string>("depth_camera_info_sub_topic", depth_camera_info_topic_, 
+    this->declare_parameter("depth_image_sub_topic", depth_image_topic_, depth_segmentation::kDepthImageTopic);
+    this->declare_parameter("rgb_image_sub_topic", rgb_image_topic_, depth_segmentation::kRgbImageTopic);
+    this->declare_parameter("depth_camera_info_sub_topic", depth_camera_info_topic_, 
                                      depth_segmentation::kDepthCameraInfoTopic);
-    node_handle_.param<std::string>("rgb_camera_info_sub_topic", rgb_camera_info_topic_, depth_segmentation::kRgbCameraInfoTopic);
-    node_handle_.param<std::string>("semantic_instance_segmentation_sub_topic", semantic_instance_segmentation_topic_, 
+    this->declare_parameter("rgb_camera_info_sub_topic", rgb_camera_info_topic_, depth_segmentation::kRgbCameraInfoTopic);
+    this->declare_parameter("semantic_instance_segmentation_sub_topic", semantic_instance_segmentation_topic_, 
                                      depth_segmentation::kSemanticInstanceSegmentationTopic);
-    node_handle_.param<std::string>("world_frame", world_frame_, depth_segmentation::kTfWorldFrame);
-    node_handle_.param<std::string>("camera_frame", camera_frame_, depth_segmentation::kTfDepthCameraFrame);
-    node_handle_.param<bool>("visualize_segmented_scene", params_.visualize_segmented_scene, params_.visualize_segmented_scene);
+    this->declare_parameter("world_frame", world_frame_, depth_segmentation::kTfWorldFrame);
+    this->declare_parameter("camera_frame", camera_frame_, depth_segmentation::kTfDepthCameraFrame);
+    this->declare_parameter("visualize_segmented_scene", params_.visualize_segmented_scene, params_.visualize_segmented_scene);
 
     // Initialize subscribers.
     depth_image_sub_ = new image_transport::SubscriberFilter(image_transport_, depth_image_topic_, 1);
     rgb_image_sub_ = new image_transport::SubscriberFilter(image_transport_, rgb_image_topic_, 1);
-    depth_info_sub_ = new message_filters::Subscriber<sensor_msgs::CameraInfo>(node_handle_, depth_camera_info_topic_, 1);
-    rgb_info_sub_ = new message_filters::Subscriber<sensor_msgs::CameraInfo>(node_handle_, rgb_camera_info_topic_, 1);
+    depth_info_sub_ = new message_filters::Subscriber<sensor_msgs::CameraInfo>(node, depth_camera_info_topic_, 1);
+    rgb_info_sub_ = new message_filters::Subscriber<sensor_msgs::CameraInfo>(node, rgb_camera_info_topic_, 1);
 
     constexpr int kQueueSize = 30;
 
@@ -99,7 +100,7 @@ class DepthSegmentationNode {
     #ifdef MASKRCNNROS_AVAILABLE
           instance_segmentation_sub_ =
               new message_filters::Subscriber<mask_rcnn_ros::Result>(
-                  node_handle_, semantic_instance_segmentation_topic_, 1);
+                  node, semantic_instance_segmentation_topic_, 1);
 
           image_segmentation_sync_policy_ =
               new message_filters::Synchronizer<ImageSegmentationSyncPolicy>(
@@ -122,14 +123,15 @@ class DepthSegmentationNode {
         boost::bind(&DepthSegmentationNode::cameraInfoCallback, this, _1, _2));
 
     point_cloud2_segment_pub_ =
-        node_handle_.advertise<sensor_msgs::PointCloud2>("object_segment", 1000);
+        this->create_publisher<sensor_msgs::PointCloud2>("object_segment", 1000);
     point_cloud2_scene_pub_ =
-        node_handle_.advertise<sensor_msgs::PointCloud2>("segmented_scene", 1);
+        this->create_publisher<sensor_msgs::PointCloud2>("segmented_scene", 1);
   }
 
 
  private:
-  ros::NodeHandle node_handle_;
+  auto node = std::shared_ptr<rclcpp::Node>;
+  // ros::NodeHandle node_handle_;
   image_transport::ImageTransport image_transport_;
   tf::TransformBroadcaster transform_broadcaster_;
 
@@ -172,9 +174,9 @@ class DepthSegmentationNode {
   message_filters::Subscriber<sensor_msgs::CameraInfo>* depth_info_sub_;
   message_filters::Subscriber<sensor_msgs::CameraInfo>* rgb_info_sub_;
 
-  ros::Publisher point_cloud2_segment_pub_;
-  ros::Publisher point_cloud2_scene_pub_;
-
+  rclcpp::Publisher<sensor_msgs::PointCloud2>::SharedPtr point_cloud2_segment_pub_;
+  rclcpp::Publisher<sensor_msgs::PointCloud2>::SharedPtr point_cloud2_scene_pub_;
+  
   message_filters::Synchronizer<ImageSyncPolicy>* image_sync_policy_;
 
   message_filters::Synchronizer<CameraInfoSyncPolicy>* camera_info_sync_policy_;
