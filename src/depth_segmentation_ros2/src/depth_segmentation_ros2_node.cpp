@@ -31,7 +31,7 @@
 #include <mask_rcnn_ros/Result.h>
 #endif
 
-#include "depth_segmentation_ros2/ros_common.h"
+#include "depth_segmentation_ros2/ros_common.h" //TODO: alter the opencv to colcon
 #include "depth_segmentation_ros2/depth_segmentation.h"
 
 struct PointSurfelLabel {
@@ -54,7 +54,7 @@ POINT_CLOUD_REGISTER_POINT_STRUCT(
 class DepthSegmentationNode {
  public:
   DepthSegmentationNode()
-      : node_handle_("~"),
+      : node_handle_("~"), //
         image_transport_(node_handle_),
         camera_info_ready_(false),
         depth_camera_(),
@@ -626,7 +626,11 @@ int main(int argc, char** argv) {
   FLAGS_stderrthreshold = 0;
 
   LOG(INFO) << "Starting depth segmentation ... ";
-  ros::init(argc, argv, "depth_segmentation_node");
+  // ros::init(argc, argv, "depth_segmentation_node");
+  // DepthSegmentationNode depth_segmentation_node;
+
+  rclcpp::init(argc, argv);
+  auto node = rclcpp::Node::make_shared("depth_segmentation_node");
   DepthSegmentationNode depth_segmentation_node;
 
   // Sets up a dynamic reconfigure server
@@ -640,8 +644,8 @@ int main(int argc, char** argv) {
       &depth_segmentation_node.depth_segmenter_, _1, _2);
   reconfigure_server.setCallback(dynamic_reconfigure_function);
 
-  while (ros::ok()) {
-    ros::spin();
+  while (rclcpp::ok()) {
+    rclcpp::spin(node);
   }
 
   return EXIT_SUCCESS;
