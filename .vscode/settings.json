@@ -1,3 +1,6 @@
 {
-    "cmake.sourceDirectory": "/home/alpha/Research/depth_segmentation_ros2/src/depth_segmentation_ros2/CMakeLists.txt"
+    "cmake.sourceDirectory": "/home/alpha/Research/depth_segmentation_ros2/src/depth_segmentation_ros2/CMakeLists.txt",
+    "files.associations": {
+        "core": "cpp"
+    }
 }
